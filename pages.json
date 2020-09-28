@@ -3,14 +3,65 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/hotel/index",
+			"style": {
+				"navigationBarTitleText": "酒店"
+			}
+		},
+
+		{
+			"path": "pages/food/index",
+			"style": {
+				"navigationBarTitleText": "美食"
+			}
+		},
+		{
+			"path": "pages/mine/index",
+			"style": {
+				"navigationBarTitleText": "我的"
 			}
 		}
 	],
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#ffd300",
 		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#cbcbcb",
+		"selectedColor": "#007aff",
+		"backgroundColor": "#fff",
+		"position": "bottom",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "./static/icon/_lvyou.png",
+				"selectedIconPath": "./static/icon/lvyou.png"
+			},
+			{
+				"pagePath": "pages/hotel/index",
+				"text": "酒店",
+				"iconPath": "./static/icon/_jiudian.png",
+				"selectedIconPath": "./static/icon/jiudian.png"
+			},
+			{
+				"pagePath": "pages/food/index",
+				"text": "美食",
+				"iconPath": "./static/icon/_dfood.png",
+				"selectedIconPath": "./static/icon/dfood.png"
+			},
+			{
+				"pagePath": "pages/mine/index",
+				"text": "我的",
+				"iconPath": "./static/icon/_wode.png",
+				"selectedIconPath": "./static/icon/wode.png"
+			}
+		]
 	}
 }
