@@ -44,7 +44,6 @@ export default {
           } else {
             console.log(zmres);
           }
-
           // console.log(res.data);
           // this.text = "request success";
         },
