@@ -1,69 +1,66 @@
 <template>
   <view>
-    <!-- 搜索 开始 -->
-    <search></search>
-
-    <!-- 搜索 结束 -->
-
-    <!-- 导航栏 开始 -->
-    <Ticket></Ticket>
-    <!-- 导航栏 结束 -->
-
-    <!-- 精准导航 开始 -->
-    <Classify></Classify>
-    <!-- 精准导航 结束 -->
-
-    <!-- 内容 开始 -->
-    <Content id="boxFixed" :class="{'is_fixed' : isFixed}"></Content>
-    <!-- 内容 结束 -->
-    <view style="height:140rpx;"></view>
-    <Article></Article>
+    <view v-for="(item,index) in list.data" :key="index">
+      <view>{{item.good_name}}</view>
+    </view>
   </view>
 </template>
 
 <script>
-import Search from "./components/search";
-import Ticket from "./components/ticket";
-import Classify from "./components/classify";
-import Content from "./components/content";
-import Article from "./components/article";
-
 export default {
-  components: {
-    Search,
-    Ticket,
-    Classify,
-    Content,
-    Article,
-  },
   data() {
     return {
-      isFixed: false,
-      rect: "",
-      menutop: "",
+      list: [],
+      limit: 10,
     };
   },
   onLoad() {
-    const query = wx.createSelectorQuery();
-    query.select("#boxFixed").boundingClientRect();
-    query.exec((res) => {
-      this.menutop = res[0].top;
+    // this.getLisy();
+    // this.$u.showToast("我是封装后的提示框", 5000);
+    this.getAjax();
+    return;
+    uni.showToast({
+      title: "我是消息提示框",
+      duration: 2000,
     });
   },
-  //监听页面滚动
-  onPageScroll(e) {
-    this.rect = e.scrollTop;
-  },
-  //计算属性
-  computed: {
-    //滑动组件置顶
-    namepage() {
-      console.log("执行");
-      if (this.rect > this.menutop) {
-        this.isFixed = true;
-      } else {
-        this.isFixed = false;
-      }
+  methods: {
+    getLisy() {
+      let t = this;
+      uni.request({
+        url: t.url + "/getIndexList", //仅为示例，并非真实接口地址。
+        data: {
+          page: 1,
+          limit: 10,
+        },
+        header: {
+          "request-header": "HMR-Api", //自定义请求头信息
+        },
+        success: (zmres) => {
+          if (zmres.data.code == 1) {
+            console.log("请求成功");
+            console.log(zmres);
+            t.list = zmres.data;
+          } else {
+            console.log(zmres);
+          }
+
+          // console.log(res.data);
+          // this.text = "request success";
+        },
+        fail: (res) => {
+          console.log(res);
+        },
+      });
+    },
+    getAjax() {
+      let t = this,
+        limit = t.limit;
+      let data = { page: 1, limit: limit };
+      t.$u.ajax("/getIndexList", data, function (res) {
+        console.log(res, "接口返回数据");
+        t.list = res;
+      });
     },
   },
 };
