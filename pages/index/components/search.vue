@@ -15,16 +15,13 @@
       </view>
     </view>
     <!-- 轮播图 -->
+    
     <swiper  :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" :circular="true" indicator-color="rgba(255,255,255)" indicator-active-color="#00ff00">
+      <block v-for="(item,index) in banner" :key="index">
       <swiper-item>
-        <view class="swiper-item" id="swiper-item" @click="localCont()"><image src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2579860314,778624796&fm=26&gp=0.jpg" mode="" /></view>
+        <view class="swiper-item" id="swiper-item" @click="localCont()"><image :src="item.image" mode="aspectFill" class="imageurl"></image></view>
       </swiper-item>
-      <swiper-item>
-        <view class="swiper-item" id="swiper-item" @click="localCont()"><image src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601272129441&di=9484548ca30554996be8c1a0908a9e97&imgtype=0&src=http%3A%2F%2Fimg.improve-yourmemory.com%2Fpic%2Fd47d90903d43dcb4ec62f7f99bda574b-0.jpg" mode="" /></view>
-      </swiper-item>
-      <swiper-item>
-        <view class="swiper-item" id="swiper-item" @click="localCont()"><image src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601272129440&di=84f4d1464e6b9dbbf4e2f00324ff6541&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2Ff%2F54e18e5654482.jpg" mode="" /></view>
-      </swiper-item>
+      </block>
         </swiper>
   </view>
 </template>
@@ -32,6 +29,21 @@
 <script>
 export default {
   name: "search",
+  data(){
+    return{
+      banner:[
+        {
+          image:"https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2579860314,778624796&fm=26&gp=0.jpg"
+        },
+         {
+          image:"https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2579860314,778624796&fm=26&gp=0.jpg"
+        }, 
+        {
+          image:"https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2579860314,778624796&fm=26&gp=0.jpg"
+        },
+      ]
+    }
+  }
 };
 </script>
 

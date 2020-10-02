@@ -14,6 +14,6 @@ export default {
 
 <style>
 /*每个页面公共css */
-@import "./styles/base.wxss/";
-@import "./styles/iconfont.wxss/";
+@import "./styles/base.css/";
+@import "./styles/iconfont.css/";
 </style>
