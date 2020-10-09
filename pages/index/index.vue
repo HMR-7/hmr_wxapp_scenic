@@ -1,8 +1,37 @@
 <template>
   <view>
-    <view v-for="(item,index) in list.data" :key="index">
-      <view>{{item.good_name}}</view>
+    <!-- 搜索框 -->
+    <view class="index-search">
+      <input class="sr" type="text" v-model="text" placeholder="请输入景区名称" />
+      <view class="ss" @click="test(text)">搜索</view>
     </view>
+    <!-- 轮播图 -->
+    <view class="index-swiper">
+      <swiper autoplay indicator-dots circular>
+        <swiper-item v-for="item in list" :key="item.id">
+          <image :src="item.src"></image>
+        </swiper-item>
+      </swiper>
+    </view>
+    <!-- 热门推荐  -->
+    <view class="title">热门推荐</view>
+    <navigator v-for="(item,index) in list" :key="index"
+    :url="`/pages/attractions/index?id=${item.id}`">
+      <view class="recommended">
+        <view class="recommended-l">
+          <image :src="item.src" />
+        </view>
+
+        <view class="recommended-r">
+          <view class="bottom-t">{{item.good_name}}</view>
+          <view class="bottom-m">16:00前均可购买门票</view>
+          <view class="bottom">
+            <view class="bottom-y">￥{{item.childTicket}}元/起</view>
+            <view class="bottom-r">详情</view>
+          </view>
+        </view>
+      </view>
+    </navigator>
   </view>
 </template>
 
@@ -10,9 +39,26 @@
 export default {
   data() {
     return {
+      text: "",
       list: [],
-      limit: 10,
+      limit: 6,
+      page: 1,
     };
+  },
+  //下拉刷新
+  onPullDownRefresh() {
+    let t = this;
+    t.list = [];
+    t.page = 1;
+    this.getAjax();
+    console.log("refresh");
+    uni.stopPullDownRefresh();
+  },
+  // 触底加载
+  onReachBottom() {
+    // console.log("底线");
+    this.page += 1;
+    this.getAjax();
   },
   onLoad() {
     // this.getLisy();
@@ -25,40 +71,59 @@ export default {
     });
   },
   methods: {
-    getLisy() {
-      let t = this;
-      uni.request({
-        url: t.url + "/getIndexList", //仅为示例，并非真实接口地址。
-        data: {
-          page: 1,
-          limit: 10,
-        },
-        header: {
-          "request-header": "HMR-Api", //自定义请求头信息
-        },
-        success: (zmres) => {
-          if (zmres.data.code == 1) {
-            console.log("请求成功");
-            console.log(zmres);
-            t.list = zmres.data;
-          } else {
-            console.log(zmres);
-          }
-          // console.log(res.data);
-          // this.text = "request success";
-        },
-        fail: (res) => {
-          console.log(res);
-        },
+    test(text) {
+      console.log(text);
+      uni.navigateTo({
+        url: "./search?name=" + text,
       });
     },
+
+    // getLisy() {
+    //   let t = this;
+    //   uni.request({
+    //     url: t.url + "/getIndexList", //仅为示例，并非真实接口地址。
+    //     data: {
+    //       page: 1,
+    //       limit: 10,
+    //     },
+    //     header: {
+    //       "request-header": "HMR-Api", //自定义请求头信息
+    //     },
+    //     success: (zmres) => {
+    //       if (zmres.data.code == 1) {
+    //         console.log("请求成功");
+    //         console.log(zmres);
+    //         t.list = zmres.data;
+    //       } else {
+    //         console.log(zmres);
+    //       }
+    //       // console.log(res.data);
+    //       // this.text = "request success";
+    //     },
+    //     fail: (res) => {
+    //       console.log(res);
+    //     },
+    //   });
+    // },
     getAjax() {
       let t = this,
         limit = t.limit;
-      let data = { page: 1, limit: limit };
+      let data = { page: t.page, limit: limit };
       t.$u.ajax("/getIndexList", data, function (res) {
         console.log(res, "接口返回数据");
-        t.list = res;
+        if (res.data.length == 0) {
+          t.page--;
+          uni.showToast({
+            title: "没有更多数据了",
+            icon: "none",
+          });
+        } else {
+          if (t.page == 1) {
+            t.list = res.data;
+          } else {
+            t.list = [...t.list, ...res.data];
+          }
+        }
       });
     },
   },
@@ -66,25 +131,85 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.is_fixed {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
+.index-search {
+  display: flex;
+  width: 100%;
+  height: 45rpx;
+  margin: 15rpx 0;
+  background: #ffd300;
+  .sr {
+    width: 80%;
+  }
+  .ss {
+    width: 120rpx;
+    height: 45rpx;
+    text-align: center;
+    background-color: yellow;
+  }
 }
-.search {
-  height: 80rpx;
-  button {
-    font-size: 15px;
-    color: #808080;
-    border-radius: 80rpx;
+.index_swiper {
+  swiper {
+    //750rpx
+    //height:calc(750rpx/2.3)
+    height: 326.1rpx;
+    image {
+      height: 100%;
+    }
+  }
+}
+.title {
+  padding: 40rpx;
+  text-align: center;
+  width: 100%;
+  height: 100rpx;
+  background: rgba(190, 189, 189, 0.116);
+}
+.recommended {
+  display: flex;
+  width: 100%;
+  margin: 30rpx 0;
+  .recommended-l {
+    margin: 0 30rpx;
+    width: 200rpx;
+    height: 180rpx;
+    border-radius: 12rpx;
+    overflow: hidden;
+    image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .recommended-r {
+    flex: 80%;
     display: flex;
-    height: 80rpx;
-    border: #808080;
-    margin: 20rpx 20rpx;
-    background-color: #f1f1f1;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    .bottom-t {
+      color: black;
+      font-weight: bold;
+    }
+    .bottom-m {
+      font-size: 20rpx;
+      color: #c0c0c0;
+    }
+    .bottom {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15rpx;
+
+      .bottom-y {
+        align-self: center;
+        font-size: 24rpx;
+        font-weight: bold;
+        color: #ffd300;
+      }
+      .bottom-r {
+        padding: 10rpx 15rpx;
+        margin-right: 30rpx;
+        color: white;
+        background-color: #ffd300;
+      }
+    }
   }
 }
 </style>
