@@ -1,21 +1,17 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		
 		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
 				"enablePullDownRefresh": true
 			}
-		}, {
+		}, 
+		{
 			"path": "pages/index/search",
 			"style": {
 				"navigationBarTitleText": "搜索"
-			}
-		},
-		{
-			"path": "pages/hotel/index",
-			"style": {
-				"navigationBarTitleText": "酒店"
 			}
 		},
 		{
@@ -24,6 +20,13 @@
 				"navigationBarTitleText": "景区"
 			}
 		},
+		{
+			"path": "pages/hotel/index",
+			"style": {
+				"navigationBarTitleText": "酒店"
+			}
+		},
+		
 		{
 			"path": "pages/food/index",
 			"style": {

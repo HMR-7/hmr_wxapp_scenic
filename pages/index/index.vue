@@ -9,14 +9,14 @@
     <view class="index-swiper">
       <swiper autoplay indicator-dots circular>
         <swiper-item v-for="item in list" :key="item.id">
-          <image :src="item.src"></image>
+          <image :src="item.swipeArr"></image>
         </swiper-item>
       </swiper>
     </view>
     <!-- 热门推荐  -->
     <view class="title">热门推荐</view>
-    <navigator v-for="(item,index) in list" :key="index"
-    :url="`/pages/attractions/index?id=${item.id}`">
+    <navigator v-for="(item,index) in list" :key="index" 
+    :url="`../attractions/index?good_id=${item.id}`">
       <view class="recommended">
         <view class="recommended-l">
           <image :src="item.src" />
@@ -77,6 +77,12 @@ export default {
         url: "./search?name=" + text,
       });
     },
+    // tuij(tuij) {
+    //   console.log(this.list.id);
+    //   uni.navigateTo({
+    //     url: "././../attractions/index?good_id=" + this.list.id,
+    //   });
+    // },
 
     // getLisy() {
     //   let t = this;
@@ -110,7 +116,7 @@ export default {
         limit = t.limit;
       let data = { page: t.page, limit: limit };
       t.$u.ajax("/getIndexList", data, function (res) {
-        console.log(res, "接口返回数据");
+        // console.log(res, "接口返回数据");
         if (res.data.length == 0) {
           t.page--;
           uni.showToast({
@@ -149,9 +155,9 @@ export default {
 }
 .index_swiper {
   swiper {
+    height:375rpx;
     //750rpx
     //height:calc(750rpx/2.3)
-    height: 326.1rpx;
     image {
       height: 100%;
     }

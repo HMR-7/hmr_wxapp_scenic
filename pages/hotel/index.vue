@@ -1,5 +1,8 @@
 <template>
-  <view>酒店</view>
+  <view>
+    酒店
+    <slot></slot>
+  </view>
 </template>
 
 <script>
