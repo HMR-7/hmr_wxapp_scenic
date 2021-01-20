@@ -9,8 +9,8 @@
     <!-- 轮播图 -->
     <view class="attractions-swiper">
       <swiper autoplay indicator-dots circular>
-        <swiper-item v-for="item in list.swipeArr" :key="item.id" >
-          <image :src="item"></image>
+        <swiper-item v-for="(item,index) in list.swipeArr" :key="index" >
+          <image :src="item" @click="previewImg(list,index)"></image>
         </swiper-item>
       </swiper>
     </view>
@@ -78,7 +78,7 @@ export default {
   },
 
   onLoad: function (options) {
-    console.log(options, "传递过来的数据");
+    // console.log(options, "传递过来的数据");
     this.good_id = options.good_id;
     // this.good_id = 1;
     this.getAjax();
@@ -109,7 +109,15 @@ export default {
         // console.log(res, "接口返回数据");
         t.foodlist = res.data;
       });
-    }
+    },
+    previewImg(list,index){
+		//uniapp预览轮播图
+		uni.previewImage({
+			current:index, //预览图片的下标
+			urls:list.swipeArr //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
+		})
+	}
+    
   },
 };
 </script>

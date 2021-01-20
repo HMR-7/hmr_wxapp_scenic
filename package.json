@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "image-webpack-loader": "^7.0.1"
+  },
+  "dependencies": {
+    "vant": "^2.12.4"
+  }
+}

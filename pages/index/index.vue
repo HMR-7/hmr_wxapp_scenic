@@ -2,14 +2,15 @@
   <view>
     <!-- 搜索框 -->
     <view class="index-search">
-      <input class="sr" type="text" v-model="text" placeholder="请输入景区名称" />
-      <view class="ss" @click="test(text)">搜索</view>
+      <button class="sr iconfont iconsearch" @click="test">请输入景区名称</button>
+      <!-- <input class="sr" type="text" v-model="text" placeholder="请输入景区名称"/> -->
+      <!-- <view class="ss" @click="test(text)">搜索</view> -->
     </view>
     <!-- 轮播图 -->
     <view class="index-swiper">
-      <swiper autoplay indicator-dots circular>
-        <swiper-item v-for="item in list" :key="item.id">
-          <image :src="item.swipeArr"></image>
+      <swiper autoplay indicator-dots circular >
+        <swiper-item v-for="(item,index) in listimg" :key="index" >
+          <image :src="item" @click="previewImg(listimg,index)"></image>
         </swiper-item>
       </swiper>
     </view>
@@ -43,6 +44,7 @@ export default {
       list: [],
       limit: 6,
       page: 1,
+      listimg:[]
     };
   },
   //下拉刷新
@@ -126,12 +128,31 @@ export default {
         } else {
           if (t.page == 1) {
             t.list = res.data;
+            if(t.list){
+            for (var i = 0; i < 6; i++) {
+            t.listimg.push(t.list[i].swipeArr);
+            }
+          }
           } else {
             t.list = [...t.list, ...res.data];
           }
+          
         }
       });
     },
+    //预览轮播图
+	previewImg(listimg,index){
+    // var i = this.list.swipeArr; //获取当前页面的轮播图数据
+    let imgsArray = [];
+    for (var i = 0; i < 6; i++) {//处理一下图片的路径
+        imgsArray.push(listimg[i]);
+    }
+		//uniapp预览轮播图
+		uni.previewImage({
+			current:index, //预览图片的下标
+			urls:imgsArray //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
+		})
+	}
   },
 };
 </script>
@@ -140,11 +161,18 @@ export default {
 .index-search {
   display: flex;
   width: 100%;
-  height: 45rpx;
-  margin: 15rpx 0;
+  height: 70rpx;
   background: #ffd300;
-  .sr {
-    width: 80%;
+
+  .sr{
+    width: 100%;
+    padding-left: 20rpx;
+    text-align: left;
+    margin: 10rpx 15rpx;
+    height: 50rpx;
+    background: #fff;
+    font-size: 20rpx;
+    color: #c0c0c0;
   }
   .ss {
     width: 120rpx;
