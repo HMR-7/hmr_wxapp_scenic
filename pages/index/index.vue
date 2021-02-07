@@ -2,7 +2,7 @@
   <view>
     <!-- 搜索框 -->
     <view class="index-search">
-      <button class="sr iconfont iconsearch" @click="test">请输入景区名称</button>
+      <button class="sr " @click="test"><span class="iconfont icon-sousuo"></span>请输入景区名称</button>
       <!-- <input class="sr" type="text" v-model="text" placeholder="请输入景区名称"/> -->
       <!-- <view class="ss" @click="test(text)">搜索</view> -->
     </view>
@@ -161,26 +161,28 @@ export default {
 .index-search {
   display: flex;
   width: 100%;
-  height: 70rpx;
+  height: 85rpx;
   background: #ffd300;
 
   .sr{
     width: 100%;
     padding-left: 20rpx;
-    text-align: left;
-    margin: 10rpx 15rpx;
-    height: 50rpx;
+    margin: 0 15rpx;
+    height: 70rpx;
+    line-height: 70rpx;
     background: #fff;
-    font-size: 20rpx;
     color: #c0c0c0;
+    text-align:left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .text{
+     align-content: center;
+    }
   }
-  .ss {
-    width: 120rpx;
-    height: 45rpx;
-    text-align: center;
-    background-color: yellow;
-  }
+ 
 }
+
 .index_swiper {
   swiper {
     height:375rpx;
