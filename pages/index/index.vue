@@ -50,6 +50,7 @@ export default {
   //下拉刷新
   onPullDownRefresh() {
     let t = this;
+    t.listimg=[],
     t.list = [];
     t.page = 1;
     this.getAjax();
@@ -73,10 +74,9 @@ export default {
     });
   },
   methods: {
-    test(text) {
-      console.log(text);
+    test() {
       uni.navigateTo({
-        url: "./search?name=" + text,
+        url: "./search",
       });
     },
     // tuij(tuij) {

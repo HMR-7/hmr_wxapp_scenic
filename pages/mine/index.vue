@@ -55,14 +55,14 @@ export default {
   methods:{
      getcode(){
        wx.login({
-        success: async (res) =>{
+        success: (res) =>{
         // 1.获取用户登陆的临时凭证，和用户是否授权没有直接关系
         var js_code= res.code;
         let t=this;
         if(js_code){
           // console.log('用户登录凭证'+js_code);
           let data={js_code:js_code};
-          await t.$u.ajax("/getOpenid", data, function (res) {
+          t.$u.ajax("/getOpenid", data, function (res) {
         console.log(res,"搜索接口返回数据");
          t.openid=res.openid;
          console.log(t.openid);

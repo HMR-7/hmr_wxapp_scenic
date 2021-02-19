@@ -63,9 +63,9 @@
 </template>
 
 <script>
-import hotel from "../../pages/components/hotel";
+// import hotel from "../../pages/components/hotel";
 export default {
-  components:{hotel},
+  components:{},
   data() {
     return {
       list: {},
