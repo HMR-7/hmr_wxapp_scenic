@@ -1,0 +1,246 @@
+<template>
+  <view class="page">
+    <view class="top">
+      <view class="gs">
+        <image src="../../static/icon/dl1.png" mode="" />
+      </view>
+    </view>
+    <view class="content">
+      <view class="sj"
+        ><image src="../../static/icon/sj.png" mode="" />
+        <h1>+86</h1>
+        <input
+          type="text"
+          id="phone"
+          v-model="phone"
+          placeholder="请输入手机号"
+        />
+        <view class="get" @click="getyzm(phone)">
+          <text>{{!codeTime?'获取验证码':codeTime+'s'}}</text>
+          </view>
+        <!-- <button @click="getyzm(phone)">验证码</button> -->
+        </view
+      >
+      <view class="yzm"
+        ><image src="../../static/icon/yzm.png" mode="" /><input
+          type="text"
+          placeholder="请输入验证码"
+          v-model="yzm"
+      /></view>
+      <view class="login"><button @click="getyzmtr()">登录</button></view>
+    </view>
+  </view>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      phone: "",
+      yzm: "",
+      PhoneCode: {},
+      codeTime:0
+    };
+  },
+  methods: {
+    //验证码发送请求
+    getyzm(phone) {
+      let phonetf = /^[1][3,4,5,7,8][0-9]{9}$/;
+      let zz = phonetf.test(phone);
+      console.log(zz);
+      if (zz == false) {
+        uni.showToast({
+          title: "手机号码有误，请重填",
+          duration: 1000,
+          icon: "none",
+        });
+      } else {
+        if(this.codeTime>0){
+      uni.showToast({
+      title: '不能重复获取',
+      icon:"none"
+      });
+      return;
+      }    else{
+      this.codeTime = 60
+      let timer = setInterval(()=>{
+      this.codeTime--;
+      if(this.codeTime<1){
+      clearInterval(timer);
+      this.codeTime = 0
+      }
+      },1000)
+        }
+      // console.log(t.phone);
+      let t = this;
+      let data={phone: t.phone};
+      t.$u.ajax('/getyzm',data,function(res){
+            console.log(res);
+            t.PhoneCode = res.validate;
+            var yzm = "你的验证码：" + JSON.stringify(res.js_code);
+            uni.showToast({
+              title: yzm,
+              duration: 3000,
+              icon: "none",
+            });
+      })
+      }
+    },
+    //验证码验证真假
+    getyzmtr() {
+      let t = this;
+      let phone = t.phone;
+      let code = t.yzm;
+      var phonecode = t.PhoneCode;
+      let sendCodeP = (phone) => {
+        for (let i = 0; i < phonecode.length; i++) {
+          // console.log(phonecode[i]);
+          if (phone == phonecode[i].phone) {
+            return true;
+          } else {
+            // console.log(validatePhoneCode[0].phone);
+            return false;
+          }
+        }
+      };
+      let findCodeAndPhone = (phone, code) => {
+        for (var item of phonecode) {
+          if (phone == item.phone && code == item.code) {
+            return "login";
+          }
+        }
+        return "error";
+      };
+      //验证码登录
+
+      // console.log(phone);
+      // 该手机号是否发送过验证码
+      if (sendCodeP(phone)) {
+        //验证码和手机号是否匹配
+        let status = findCodeAndPhone(phone, code);
+        if (status == "login") {
+          //登录成功
+          console.log("登录成功");
+          uni.setStorageSync('phone', phone);
+          //             uni.switchTab({
+          //             url: '/pages/mine/index'
+          // });
+          uni.reLaunch({
+            url: `/pages/mine/index?phone=${t.phone}`,
+          });
+          uni.reLaunch({
+            url: '/pages/index/index',
+          });
+        } else if (status == "error") {
+          console.log("登录失败");
+        }
+      } else {
+        console.log("未发送验证码");
+      }
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.page {
+  position: relative;
+  background-color: #f1f1f1;
+  height: 1800rpx;
+  .top {
+    background-color: #ffd300;
+    height: 300rpx;
+
+    .gs {
+      padding-top: 20rpx;
+      width: 100%;
+      height: 150rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      image {
+        width: 150rpx;
+        height: 150rpx;
+      }
+    }
+  }
+  .content {
+    position: absolute;
+    top: 140rpx;
+    left: 25rpx;
+    width: 700rpx;
+    background-color: #fff;
+    margin: 40rpx auto;
+    border-radius: 15rpx;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    .sj {
+      flex: 1;
+      width: 100%;
+      margin: 0 20rpx;
+      padding: 20rpx 50rpx;
+      border-bottom: 1rpx solid #c8c7cc;
+      display: flex;
+      justify-content: space-between;
+      image {
+        width: 40rpx;
+        height: 40rpx;
+        margin-right: 20rpx;
+      }
+      input {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 40rpx;
+      }
+
+.get{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 180rpx;
+        font-size: 20rpx;
+
+ background-color: orange;
+ height: 70rpx;
+ line-height: 70rpx;
+ color: white;
+ border-radius: 10rpx;
+ padding: 0 20rpx;
+}
+      // button {
+      //   display: flex;
+      //   justify-content: center;
+      //   align-items: center;
+      //   width: 150rpx;
+      //   height: 60rpx;
+      //   font-size: 20rpx;
+      //   background-color: #f1f1f1;
+      // }
+    }
+    .yzm {
+      flex: 1;
+      width: 100%;
+      padding: 20rpx 50rpx;
+      border-bottom: 1rpx solid #c8c7cc;
+      display: flex;
+      justify-content: start;
+      image {
+        width: 40rpx;
+        height: 40rpx;
+        margin-right: 20rpx;
+      }
+    }
+    .login {
+      flex: 1;
+      width: 100%;
+      padding: 20rpx 50rpx;
+      button {
+        background-color: #f1f1f1;
+      }
+    }
+  }
+}
+</style>

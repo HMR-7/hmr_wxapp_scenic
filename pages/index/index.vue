@@ -3,36 +3,50 @@
     <!-- 搜索框 -->
     <view class="index-search">
       <button class="sr " @click="test"><span class="iconfont icon-sousuo"></span>请输入景区名称</button>
-      <!-- <input class="sr" type="text" v-model="text" placeholder="请输入景区名称"/> -->
-      <!-- <view class="ss" @click="test(text)">搜索</view> -->
     </view>
+  
+  <view class="mod">
+  <view class="box">
     <!-- 轮播图 -->
-    <view class="index-swiper">
-      <swiper autoplay indicator-dots circular >
+    <view class="Slider0">
+          <swiper autoplay indicator-dots circular style="height:380rpx" >
         <swiper-item v-for="(item,index) in listimg" :key="index" >
           <image :src="item" @click="previewImg(listimg,index)"></image>
         </swiper-item>
       </swiper>
     </view>
-    <!-- 热门推荐  -->
-    <view class="title">热门推荐</view>
-    <navigator v-for="(item,index) in list" :key="index" 
+    <!-- 主要内容 -->
+    <span class="places">
+      热门推荐
+    </span>
+    <navigator class="main" v-for="(item,index) in list" :key="index" 
     :url="`../attractions/index?good_id=${item.id}`">
-      <view class="recommended">
-        <view class="recommended-l">
-          <image :src="item.src" />
+      <view class="block" >
+        <view class="block_1">
+          <view class="pic">
+            <image :src="item.src" mode="" />
+          </view>
         </view>
-
-        <view class="recommended-r">
-          <view class="bottom-t">{{item.good_name}}</view>
-          <view class="bottom-m">16:00前均可购买门票</view>
-          <view class="bottom">
-            <view class="bottom-y">￥{{item.childTicket}}元/起</view>
-            <view class="bottom-r">详情</view>
+        <view class="group">
+          <span class="info">
+            {{item.good_name}}
+          </span>
+          <view class="wrap">
+            <span class="leventbesiktas">
+              16:00前均可购买门票
+            </span>
+          </view>
+          <view class="block_2">
+            <span class="count">
+              ￥{{item.childTicket}}元/起
+            </span>
           </view>
         </view>
       </view>
+      <view class="icon_4"></view>
     </navigator>
+  </view>
+</view>
   </view>
 </template>
 
@@ -64,14 +78,8 @@ export default {
     this.getAjax();
   },
   onLoad() {
-    // this.getLisy();
-    // this.$u.showToast("我是封装后的提示框", 5000);
     this.getAjax();
     return;
-    uni.showToast({
-      title: "我是消息提示框",
-      duration: 2000,
-    });
   },
   methods: {
     test() {
@@ -79,13 +87,6 @@ export default {
         url: "./search",
       });
     },
-    // tuij(tuij) {
-    //   console.log(this.list.id);
-    //   uni.navigateTo({
-    //     url: "././../attractions/index?good_id=" + this.list.id,
-    //   });
-    // },
-
     // getLisy() {
     //   let t = this;
     //   uni.request({
@@ -111,15 +112,49 @@ export default {
     //     fail: (res) => {
     //       console.log(res);
     //     },
-    //   });
+    //   });·
     // },
     getAjax() {
-      let t = this,
-        limit = t.limit;
-      let data = { page: t.page, limit: limit };
-      t.$u.ajax("/getIndexList", data, function (res) {
+      // let t =this;
+      // wx.request({
+      //   url: 'http://127.0.0.1:8002',
+      //   // url:'http://192.168.1.103:8002',
+      //    data: {
+      //     page: t.page,
+      //     limit: t.limit,
+      //   },
+      //   success: function (res) {
+      //     // console.log(res.data);
+      //     // t.list=res.data;
+      //     //   for (var i = 0; i < 6; i++) {
+      //     // t.listimg.push(t.list[i].swipeArr);
+      //     //   }
+      //      if (res.data.length == 0) {
+      //     t.page--;
+      //     uni.showToast({
+      //       title: "没有更多数据了",
+      //       icon: "none",
+      //     });
+      //   } else {
+      //     if (t.page == 1) {
+      //       t.list = res.data;
+      //       if(t.list){
+      //       for (var i = 0; i < 6; i++) {
+      //       t.listimg.push(t.list[i].swipeArr);
+      //       }
+      //     }
+      //     } else {
+      //       t.list = [...t.list, ...res.data];
+      //     }
+          
+      //   }
+      //   }
+      // })
+      let t = this;
+      let data = { page: t.page, limit: t.limit };
+      t.$u.ajax("/", data, function (res) {
         // console.log(res, "接口返回数据");
-        if (res.data.length == 0) {
+        if (res.length == 0) {
           t.page--;
           uni.showToast({
             title: "没有更多数据了",
@@ -127,14 +162,14 @@ export default {
           });
         } else {
           if (t.page == 1) {
-            t.list = res.data;
+            t.list = res;
             if(t.list){
             for (var i = 0; i < 6; i++) {
             t.listimg.push(t.list[i].swipeArr);
             }
           }
           } else {
-            t.list = [...t.list, ...res.data];
+            t.list = [...t.list, ...res];
           }
           
         }
@@ -247,5 +282,199 @@ export default {
       }
     }
   }
+}
+
+//接上的
+.mod {
+  width: 375rpx * 2;
+  // height: 872rpx * 2;
+}
+.mod .box {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  background-color: #F5F8FB;
+  width: 375rpx * 2;
+  // height: 872rpx * 2;
+  overflow: hidden;
+}
+.mod .Slider0 {
+  width: 375rpx * 2;
+  height: 235rpx * 2;
+}
+.mod .bd {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  // background-color: #C7CAD1;
+  width: 375rpx * 2;
+  height: 235rpx * 2;
+  overflow: hidden;
+}
+.mod .layer {
+  position: absolute;
+  top: 0rpx * 2;
+  left: 0rpx * 2;
+  width: 375rpx * 2;
+  height: 235rpx * 2;
+}
+.mod .container {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: column;
+  // background-color: rgba(0,0,0,0.26);
+  width: 375rpx * 2;
+  height: 235rpx * 2;
+}
+.mod .turkish {
+  position: relative;
+  margin-top: 81rpx * 2;
+  max-width: 228rpx * 2;
+  height: 40rpx * 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 40rpx * 2;
+  letter-spacing: 0;
+  color: #ffffff;
+  font-family: MicrosoftYaHei, Microsoft YaHei;
+  font-size: 30rpx * 2;
+  font-weight: normal;
+}
+.mod .places {
+  position: relative;
+  margin-top: -29rpx * 2;
+  margin-left: 16rpx * 2;
+  max-width: 359rpx * 2;
+  height: 18rpx * 2;
+  // overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 22rpx * 2;
+  letter-spacing: 0;
+  color: #000000;
+  font-family: Helvetica;
+  font-size: 18rpx * 2;
+  font-weight: normal;
+}
+.mod .main {
+  box-shadow: 0 2rpx * 2 9rpx * 2 0 rgba(0,0,0,0.11);
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+  align-self: center;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 16rpx * 2;
+  border-radius: 8rpx * 2;
+  background-color: #FFFFFF;
+  width: 343rpx * 2;
+  height: 130rpx * 2;
+}
+.mod .block {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 16rpx * 2;
+  margin-bottom: 16rpx * 2;
+  margin-right: 46rpx * 2;
+  height: 101rpx * 2;
+}
+.mod .block_1 {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  margin-right: 16rpx * 2;
+  border-radius: 6rpx * 2;
+  background-color: rgba(199,202,209,0.46);
+  width: 98rpx * 2;
+  height: 98rpx * 2;
+  overflow: hidden;
+}
+.mod .pic {
+  width: 98rpx * 2;
+  height: 98rpx * 2;
+  image {
+      width: 100%;
+      height: 100%;
+    }
+}
+.mod .group {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  height: 101rpx * 2;
+}
+.mod .info {
+  position: relative;
+  width: 129rpx * 2;
+  height: 44rpx * 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 22rpx * 2;
+  letter-spacing: 0;
+  color: #26315f;
+  font-family: Helvetica;
+  font-size: 18rpx * 2;
+  font-weight: normal;
+  -webkit-line-clamp: 2rpx * 2;
+}
+.mod .wrap {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 4rpx * 2;
+  height: 18rpx * 2;
+}
+.mod .icon_3 {
+  margin-right: 4rpx * 2;
+  width: 11rpx * 2;
+  height: 16rpx * 2;
+}
+.mod .leventbesiktas {
+  line-height: 18rpx * 2;
+  letter-spacing: 0;
+  color: #b9bdc5;
+  font-family: Helvetica;
+  font-size: 14rpx * 2;
+  font-weight: normal;
+}
+.mod .block_2 {
+  display: flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  margin-top: 15rpx * 2;
+  height: 20rpx * 2;
+}
+.mod .icon-home {
+  margin-top: -4rpx * 2;
+  margin-right: 4rpx * 2;
+  width: 12rpx * 2;
+  height: 12rpx * 2;
+}
+.mod .count {
+  line-height: 17rpx * 2;
+  letter-spacing: 0;
+  color: #ffd300;
+  font-family: Helvetica;
+  font-size: 14rpx * 2;
+  font-weight: normal;
+}
+.mod .ratings {
+  margin-top: -3rpx * 2;
+  line-height: 17rpx * 2;
+  letter-spacing: 0;
+  color: #b9bdc5;
+  font-family: Helvetica;
+  font-size: 14rpx * 2;
+  font-weight: normal;
+}
+.mod .icon_4 {
+  margin-top: 16rpx * 2;
+  width: 16rpx * 2;
+  height: 23rpx * 2;
 }
 </style>

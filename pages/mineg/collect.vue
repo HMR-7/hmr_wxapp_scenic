@@ -1,6 +1,8 @@
 <template>
-  <view  class="search-content">
-  <navigator class="box" v-for="(item,index) in list" :key="index" 
+  <!-- 接上 -->
+  <view>
+    <view  class="search-content">
+  <navigator class="box" v-for="(item,index) in collectList" :key="index" 
     :url="`../attractions/index?good_id=${item.id}`">
   <image class="bd" :src="item.src" mode="" />
   <span class="main">
@@ -11,6 +13,9 @@
   </span>
   <view class="ft">
     <view class="outer">
+       <view class="dotWrap">
+        <image class="dot" src="../../static/icon/ysc.png" mode="" />
+      </view>
            <view class="tagWrap">
         <span class="tag">
           {{item.tags}}
@@ -18,12 +23,6 @@
       </view>
     </view>
     <view class="block">
-      <!-- <img
-        class="jinbi"
-        src="./images/img_16501_0_0.png"
-        data-src="./images/img_16501_0_0.png"
-        alt="jinbi"
-      /> -->
       <span class="num">
         ￥{{item.childTicket}}元/起
       </span>
@@ -32,34 +31,59 @@
     
 </navigator>
   </view>
+  </view>
 </template>
 
 <script>
 export default {
- data() {
-    return {
-      serarWord: "",
-      list: [],
-      limit: 10,
-    };
+    data(){
+        return{
+            collectList:[],
+            user_id:0,
+            page:1,
+        }
+    },
+    created(){
+      this.user_id = uni.getStorageSync('user_id');
+      if(this.user_id){
+        this.getCollect();
+      }else{
+        uni.showToast({
+            title: "请先手机登录后再查看",
+            icon: "none",
+          });
+}
+        
+    },
+    methods:{
+      // 触底加载
+  onReachBottom() {
+    // console.log("底线");
+    this.page += 1;
+    this.getCollect();
   },
-  onLoad(options) {
-    // console.log(options, "传递过来的数据");
-    this.serarWord = options.name;
-    this.getAjax();
-  },
-  methods: {
-    getAjax() {
-      let t = this,
-        limit = t.limit,
-        keyword = t.serarWord;
-      let data = { page: 1, limit: limit, keyword: keyword };
-      t.$u.ajax("/getKeyWordSearchList", data, function (res) {
-        console.log(res, "搜索接口返回数据");
-        t.list = res;
+       getCollect(){
+      let t = this;
+      let data = { user_id: t.user_id,limit:30,page:t.page };
+      this.$u.ajax("/getCollectList", data, function (res) {
+        console.log(res, "接口返回数据");
+        if (res.length == 0) {
+          t.page--;
+          uni.showToast({
+            title: "没有更多数据了",
+            icon: "none",
+          });
+        } else {
+          if (t.page == 1) {
+        t.collectList=res;
+          } else {
+            t.collectList = [...t.collectList, ...res];
+          }
+        }
       });
     },
-  },
+    }
+
 }
 </script>
 
@@ -67,9 +91,8 @@ export default {
 .search-content{
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
+  justify-content: flex-start;
 }
-//接上
 .box {
   display: flex;
   align-items: flex-start;
