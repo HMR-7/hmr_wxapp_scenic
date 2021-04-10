@@ -1,5 +1,4 @@
 <template>
-  <!-- 接上 -->
   <view>
     <view  class="search-content">
   <navigator class="box" v-for="(item,index) in footerList" :key="index" 
@@ -44,14 +43,13 @@ export default {
     };
   },
   created() {
-    this.user_id = uni.getStorageSync('user_id');
-      if(this.user_id){
-        this.getfooterList();
+    let t =this;
+    t.user_id = uni.getStorageSync('user_id');
+      if(t.user_id){
+        t.getfooterList();
       }else{
-        uni.showToast({
-            title: "请先手机登录后再查看",
-            icon: "none",
-          });
+      t.$u.showToast("请先手机登录后再查看",2000,'none')
+      
       }
   },
   methods: {
@@ -62,24 +60,17 @@ export default {
       this.getfooterList();
     },
     getfooterList() {
-      this.user_id = uni.getStorageSync("user_id");
-      let t = this;
-      let data = { page: t.page, limit: 30, user_id: t.user_id };
-      t.$u.ajax("/getFooterList", data, function (res) {
+      let t = this,
+      page = t.page,
+      limit = 30,
+      user_id = t.user_id,
+      list = t.footerList;
+      t.user_id = uni.getStorageSync("user_id");
+      let data = { page: page, limit: limit, user_id: user_id };
+      t.$u.ajax(t.$api.getFooterList, data, function (res) {
         console.log(res, "搜索接口返回数据");
-        if (res.length == 0) {
-          t.page--;
-          uni.showToast({
-            title: "没有更多数据了",
-            icon: "none",
-          });
-        } else {
-          if (t.page == 1) {
-            t.footerList = res;
-          } else {
-            t.footerList = [...t.footerList, ...res];
-          }
-        }
+        t.footerList = t.$u.pullRefresh(list,res,page).list;
+        t.page = t.$u.pullRefresh(list,res,page).page;
       });
     },
   },
@@ -217,7 +208,7 @@ export default {
   margin-right: 20rpx;
   height: 24rpx;
   line-height: 24rpx;
-  color: #ffd300;
+  color: var(--themeColor);
   font-size: 20rpx;
   font-weight: 400;
 }

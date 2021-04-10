@@ -2,51 +2,51 @@
   <view>
     <!-- 搜索框 -->
     <view class="index-search">
-      <button class="sr " @click="test"><span class="iconfont icon-sousuo"></span>请输入景区名称</button>
+      <button class="sr" @click="test">
+        <span class="iconfont icon-sousuo"></span>请输入景区名称
+      </button>
     </view>
-  
-  <view class="mod">
-  <view class="box">
-    <!-- 轮播图 -->
-    <view class="Slider0">
-          <swiper autoplay indicator-dots circular style="height:380rpx" >
-        <swiper-item v-for="(item,index) in listimg" :key="index" >
-          <image :src="item" @click="previewImg(listimg,index)"></image>
-        </swiper-item>
-      </swiper>
-    </view>
-    <!-- 主要内容 -->
-    <span class="places">
-      热门推荐
-    </span>
-    <navigator class="main" v-for="(item,index) in list" :key="index" 
-    :url="`../attractions/index?good_id=${item.id}`">
-      <view class="block" >
-        <view class="block_1">
-          <view class="pic">
-            <image :src="item.src" mode="" />
-          </view>
+
+    <view class="mod">
+      <view class="box">
+        <!-- 轮播图 -->
+        <view class="Slider0">
+          <swiper autoplay indicator-dots circular style="height: 380rpx">
+            <swiper-item v-for="(item, index) in listimg" :key="index">
+              <image :src="item" @click="previewImg(listimg, index)"></image>
+            </swiper-item>
+          </swiper>
         </view>
-        <view class="group">
-          <span class="info">
-            {{item.good_name}}
-          </span>
-          <view class="wrap">
-            <span class="leventbesiktas">
-              16:00前均可购买门票
-            </span>
+        <!-- 主要内容 -->
+        <span class="places"> 热门推荐 </span>
+        <navigator
+          class="main"
+          v-for="(item, index) in list"
+          :key="index"
+          :url="`../attractions/index?good_id=${item.id}`"
+        >
+          <view class="block">
+            <view class="block_1">
+              <view class="pic">
+                <image :src="item.src" mode="" />
+              </view>
+            </view>
+            <view class="group">
+              <span class="info">
+                {{ item.good_name }}
+              </span>
+              <view class="wrap">
+                <span class="leventbesiktas"> 16:00前均可购买门票 </span>
+              </view>
+              <view class="block_2">
+                <span class="count"> ￥{{ item.childTicket }}元/起 </span>
+              </view>
+            </view>
           </view>
-          <view class="block_2">
-            <span class="count">
-              ￥{{item.childTicket}}元/起
-            </span>
-          </view>
-        </view>
+          <view class="icon_4"></view>
+        </navigator>
       </view>
-      <view class="icon_4"></view>
-    </navigator>
-  </view>
-</view>
+    </view>
   </view>
 </template>
 
@@ -58,28 +58,27 @@ export default {
       list: [],
       limit: 6,
       page: 1,
-      listimg:[]
+      listimg: [],
     };
   },
   //下拉刷新
   onPullDownRefresh() {
     let t = this;
-    t.listimg=[],
-    t.list = [];
+    (t.listimg = []), (t.list = []);
     t.page = 1;
-    this.getAjax();
-    console.log("refresh");
+    t.getAjax();
     uni.stopPullDownRefresh();
   },
   // 触底加载
   onReachBottom() {
+    let t = this;
     // console.log("底线");
-    this.page += 1;
-    this.getAjax();
+    t.page += 1;
+    t.getAjax();
   },
   onLoad() {
-    this.getAjax();
-    return;
+    let t = this;
+    t.getAjax();
   },
   methods: {
     test() {
@@ -87,107 +86,41 @@ export default {
         url: "./search",
       });
     },
-    // getLisy() {
-    //   let t = this;
-    //   uni.request({
-    //     url: t.url + "/getIndexList", //仅为示例，并非真实接口地址。
-    //     data: {
-    //       page: 1,
-    //       limit: 10,
-    //     },
-    //     header: {
-    //       "request-header": "HMR-Api", //自定义请求头信息
-    //     },
-    //     success: (zmres) => {
-    //       if (zmres.data.code == 1) {
-    //         console.log("请求成功");
-    //         console.log(zmres);
-    //         t.list = zmres.data;
-    //       } else {
-    //         console.log(zmres);
-    //       }
-    //       // console.log(res.data);
-    //       // this.text = "request success";
-    //     },
-    //     fail: (res) => {
-    //       console.log(res);
-    //     },
-    //   });·
-    // },
     getAjax() {
-      // let t =this;
-      // wx.request({
-      //   url: 'http://127.0.0.1:8002',
-      //   // url:'http://192.168.1.103:8002',
-      //    data: {
-      //     page: t.page,
-      //     limit: t.limit,
-      //   },
-      //   success: function (res) {
-      //     // console.log(res.data);
-      //     // t.list=res.data;
-      //     //   for (var i = 0; i < 6; i++) {
-      //     // t.listimg.push(t.list[i].swipeArr);
-      //     //   }
-      //      if (res.data.length == 0) {
-      //     t.page--;
-      //     uni.showToast({
-      //       title: "没有更多数据了",
-      //       icon: "none",
-      //     });
-      //   } else {
-      //     if (t.page == 1) {
-      //       t.list = res.data;
-      //       if(t.list){
-      //       for (var i = 0; i < 6; i++) {
-      //       t.listimg.push(t.list[i].swipeArr);
-      //       }
-      //     }
-      //     } else {
-      //       t.list = [...t.list, ...res.data];
-      //     }
-          
-      //   }
-      //   }
-      // })
-      let t = this;
-      let data = { page: t.page, limit: t.limit };
-      t.$u.ajax("/", data, function (res) {
+      let t = this,
+        list = t.list,
+        page = t.page,
+        data = { page: t.page, limit: t.limit };
+      t.$u.ajax(t.$api.getIndex, data, function (res) {
         // console.log(res, "接口返回数据");
-        if (res.length == 0) {
-          t.page--;
-          uni.showToast({
-            title: "没有更多数据了",
-            icon: "none",
-          });
-        } else {
-          if (t.page == 1) {
-            t.list = res;
-            if(t.list){
-            for (var i = 0; i < 6; i++) {
-            t.listimg.push(t.list[i].swipeArr);
+        // 数据拼接
+        t.list = t.$u.pullRefresh(list, res, page).list;
+        t.page = t.$u.pullRefresh(list, res, page).page;
+        //轮播图数组
+        if (t.page == 1) {
+          // t.list = res;
+          if (t.list) {
+            for (let i = 0; i < 6; i++) {
+              t.listimg.push(t.list[i].swipeArr);
             }
           }
-          } else {
-            t.list = [...t.list, ...res];
-          }
-          
         }
       });
     },
     //预览轮播图
-	previewImg(listimg,index){
-    // var i = this.list.swipeArr; //获取当前页面的轮播图数据
-    let imgsArray = [];
-    for (var i = 0; i < 6; i++) {//处理一下图片的路径
+    previewImg(listimg, index) {
+      // var i = this.list.swipeArr; //获取当前页面的轮播图数据
+      let imgsArray = [];
+      for (let i = 0; i < 6; i++) {
+        //处理一下图片的路径
         imgsArray.push(listimg[i]);
-    }
-		//uniapp预览轮播图
-		uni.previewImage({
-			current:index, //预览图片的下标
-			urls:imgsArray //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
-		})
-	}
+      }
+      //uniapp预览轮播图
+      uni.previewImage({
+        current: index, //预览图片的下标
+        urls: imgsArray, //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
+      });
+    },
   },
 };
 </script>
@@ -197,9 +130,9 @@ export default {
   display: flex;
   width: 100%;
   height: 85rpx;
-  background: #ffd300;
+  background: var(--themeColor);
 
-  .sr{
+  .sr {
     width: 100%;
     padding-left: 20rpx;
     margin: 0 15rpx;
@@ -207,20 +140,19 @@ export default {
     line-height: 70rpx;
     background: #fff;
     color: #c0c0c0;
-    text-align:left;
+    text-align: left;
     display: flex;
     justify-content: center;
     align-items: center;
-    .text{
-     align-content: center;
+    .text {
+      align-content: center;
     }
   }
- 
 }
 
 .index_swiper {
   swiper {
-    height:375rpx;
+    height: 375rpx;
     //750rpx
     //height:calc(750rpx/2.3)
     image {
@@ -272,13 +204,13 @@ export default {
         align-self: center;
         font-size: 24rpx;
         font-weight: bold;
-        color: #ffd300;
+        color: var(--themeColor);
       }
       .bottom-r {
         padding: 10rpx 15rpx;
         margin-right: 30rpx;
         color: white;
-        background-color: #ffd300;
+        background-color: var(--themeColor);
       }
     }
   }
@@ -293,7 +225,7 @@ export default {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  background-color: #F5F8FB;
+  background-color: #f5f8fb;
   width: 375rpx * 2;
   // height: 872rpx * 2;
   overflow: hidden;
@@ -358,7 +290,7 @@ export default {
   font-weight: normal;
 }
 .mod .main {
-  box-shadow: 0 2rpx * 2 9rpx * 2 0 rgba(0,0,0,0.11);
+  box-shadow: 0 2rpx * 2 9rpx * 2 0 rgba(0, 0, 0, 0.11);
   display: flex;
   position: relative;
   align-items: flex-start;
@@ -367,7 +299,7 @@ export default {
   justify-content: center;
   margin-top: 16rpx * 2;
   border-radius: 8rpx * 2;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   width: 343rpx * 2;
   height: 130rpx * 2;
 }
@@ -387,7 +319,7 @@ export default {
   justify-content: center;
   margin-right: 16rpx * 2;
   border-radius: 6rpx * 2;
-  background-color: rgba(199,202,209,0.46);
+  background-color: rgba(199, 202, 209, 0.46);
   width: 98rpx * 2;
   height: 98rpx * 2;
   overflow: hidden;
@@ -396,9 +328,9 @@ export default {
   width: 98rpx * 2;
   height: 98rpx * 2;
   image {
-      width: 100%;
-      height: 100%;
-    }
+    width: 100%;
+    height: 100%;
+  }
 }
 .mod .group {
   display: flex;
@@ -458,7 +390,7 @@ export default {
 .mod .count {
   line-height: 17rpx * 2;
   letter-spacing: 0;
-  color: #ffd300;
+  color: var(--themeColor);
   font-family: Helvetica;
   font-size: 14rpx * 2;
   font-weight: normal;

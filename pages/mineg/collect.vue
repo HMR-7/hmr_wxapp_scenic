@@ -1,94 +1,83 @@
 <template>
-  <!-- 接上 -->
   <view>
-    <view  class="search-content">
-  <navigator class="box" v-for="(item,index) in collectList" :key="index" 
-    :url="`../attractions/index?good_id=${item.id}`">
-  <image class="bd" :src="item.src" mode="" />
-  <span class="main">
-    {{item.good_name}}
-  </span>
-  <span class="submain">
-    {{item.introduce}}
-  </span>
-  <view class="ft">
-    <view class="outer">
-       <view class="dotWrap">
-        <image class="dot" src="../../static/icon/ysc.png" mode="" />
-      </view>
-           <view class="tagWrap">
-        <span class="tag">
-          {{item.tags}}
+    <view class="search-content">
+      <navigator
+        class="box"
+        v-for="(item, index) in collectList"
+        :key="index"
+        :url="`../attractions/index?good_id=${item.id}`"
+      >
+        <image class="bd" :src="item.src" mode="" />
+        <span class="main">
+          {{ item.good_name }}
         </span>
-      </view>
+        <span class="submain">
+          {{ item.introduce }}
+        </span>
+        <view class="ft">
+          <view class="outer">
+            <view class="dotWrap">
+              <image class="dot" src="../../static/icon/ysc.png" mode="" />
+            </view>
+            <view class="tagWrap">
+              <span class="tag">
+                {{ item.tags }}
+              </span>
+            </view>
+          </view>
+          <view class="block">
+            <span class="num"> ￥{{ item.childTicket }}元/起 </span>
+          </view>
+        </view>
+      </navigator>
     </view>
-    <view class="block">
-      <span class="num">
-        ￥{{item.childTicket}}元/起
-      </span>
-    </view>
-    </view>
-    
-</navigator>
-  </view>
   </view>
 </template>
 
 <script>
 export default {
-    data(){
-        return{
-            collectList:[],
-            user_id:0,
-            page:1,
-        }
-    },
-    created(){
-      this.user_id = uni.getStorageSync('user_id');
-      if(this.user_id){
-        this.getCollect();
-      }else{
-        uni.showToast({
-            title: "请先手机登录后再查看",
-            icon: "none",
-          });
-}
-        
-    },
-    methods:{
-      // 触底加载
-  onReachBottom() {
-    // console.log("底线");
-    this.page += 1;
-    this.getCollect();
+  data() {
+    return {
+      collectList: [],
+      user_id: 0,
+      page: 1,
+    };
   },
-       getCollect(){
-      let t = this;
-      let data = { user_id: t.user_id,limit:30,page:t.page };
-      this.$u.ajax("/getCollectList", data, function (res) {
+  created() {
+    let t = this;
+    t.user_id = uni.getStorageSync("user_id");
+    if (t.user_id) {
+      t.getCollect();
+    } else {
+      t.$u.showToast("请先手机登录后再查看", 2000, "none");
+    }
+  },
+  methods: {
+    // 触底加载
+    onReachBottom() {
+      // console.log("底线");
+      this.page += 1;
+      this.getCollect();
+    },
+    getCollect() {
+      let t = this,
+        user_id = t.user_id,
+        limit = 30,
+        page = t.page,
+        list = t.collectList,
+        data = { user_id: user_id, limit: limit, page: page };
+        t.$u.ajax(t.$api.getCollectList, data, function (res) {
         console.log(res, "接口返回数据");
-        if (res.length == 0) {
-          t.page--;
-          uni.showToast({
-            title: "没有更多数据了",
-            icon: "none",
-          });
-        } else {
-          if (t.page == 1) {
-        t.collectList=res;
-          } else {
-            t.collectList = [...t.collectList, ...res];
-          }
-        }
+        t.collectList = t.$u.pullRefresh(list, res, page).list;
+        t.page = t.$u.pullRefresh(list, res, page).page;
       });
     },
-    }
-
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.search-content{
+.search-content {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -101,7 +90,7 @@ export default {
   background-color: #ffffff;
   width: 94%;
   height: 646rpx;
-  box-shadow: 0 2rpx * 2 9rpx * 2 0 rgba(0,0,0,0.11);
+  box-shadow: 0 2rpx * 2 9rpx * 2 0 rgba(0, 0, 0, 0.11);
   align-self: center;
   justify-content: center;
   margin-top: 16rpx * 2;
@@ -191,7 +180,7 @@ export default {
   flex-direction: row;
   margin-left: 6rpx;
   border-radius: 6rpx;
-  background-color: rgba(253,234,238,0.90);
+  background-color: rgba(253, 234, 238, 0.9);
   padding-right: 9rpx;
   padding-left: 8rpx;
   height: 28rpx;
@@ -218,7 +207,7 @@ export default {
   margin-right: 20rpx;
   height: 24rpx;
   line-height: 24rpx;
-  color: #ffd300;
+  color: var(--themeColor);
   font-size: 20rpx;
   font-weight: 400;
 }

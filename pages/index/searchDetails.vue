@@ -1,42 +1,37 @@
 <template>
-  <view  class="search-content">
-  <navigator class="box" v-for="(item,index) in list" :key="index" 
-    :url="`../attractions/index?good_id=${item.id}`">
-  <image class="bd" :src="item.src" mode="" />
-  <span class="main">
-    {{item.good_name}}
-  </span>
-  <span class="submain">
-    {{item.introduce}}
-  </span>
-  <view class="ft">
-    <view class="outer">
-           <view class="tagWrap">
-        <span class="tag">
-          {{item.tags}}
-        </span>
-      </view>
-    </view>
-    <view class="block">
-      <!-- <img
-        class="jinbi"
-        src="./images/img_16501_0_0.png"
-        data-src="./images/img_16501_0_0.png"
-        alt="jinbi"
-      /> -->
-      <span class="num">
-        ￥{{item.childTicket}}元/起
+  <view class="search-content">
+    <navigator
+      class="box"
+      v-for="(item, index) in list"
+      :key="index"
+      :url="`../attractions/index?good_id=${item.id}`"
+    >
+      <image class="bd" :src="item.src" mode="" />
+      <span class="main">
+        {{ item.good_name }}
       </span>
-    </view>
-    </view>
-    
-</navigator>
+      <span class="submain">
+        {{ item.introduce }}
+      </span>
+      <view class="ft">
+        <view class="outer">
+          <view class="tagWrap">
+            <span class="tag">
+              {{ item.tags }}
+            </span>
+          </view>
+        </view>
+        <view class="block">
+          <span class="num"> ￥{{ item.childTicket }}元/起 </span>
+        </view>
+      </view>
+    </navigator>
   </view>
 </template>
 
 <script>
 export default {
- data() {
+  data() {
     return {
       serarWord: "",
       list: [],
@@ -52,19 +47,19 @@ export default {
     getAjax() {
       let t = this,
         limit = t.limit,
-        keyword = t.serarWord;
-      let data = { page: 1, limit: limit, keyword: keyword };
-      t.$u.ajax("/getKeyWordSearchList", data, function (res) {
+        keyword = t.serarWord,
+        data = { page: 1, limit: limit, keyword: keyword };
+      t.$u.ajax(t.$api.getKeyWordSearchList, data, function (res) {
         console.log(res, "搜索接口返回数据");
         t.list = res;
       });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.search-content{
+.search-content {
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
@@ -78,7 +73,7 @@ export default {
   background-color: #ffffff;
   width: 94%;
   height: 646rpx;
-  box-shadow: 0 2rpx * 2 9rpx * 2 0 rgba(0,0,0,0.11);
+  box-shadow: 0 2rpx * 2 9rpx * 2 0 rgba(0, 0, 0, 0.11);
   align-self: center;
   justify-content: center;
   margin-top: 16rpx * 2;
@@ -168,7 +163,7 @@ export default {
   flex-direction: row;
   margin-left: 6rpx;
   border-radius: 6rpx;
-  background-color: rgba(253,234,238,0.90);
+  background-color: rgba(253, 234, 238, 0.9);
   padding-right: 9rpx;
   padding-left: 8rpx;
   height: 28rpx;
@@ -195,7 +190,7 @@ export default {
   margin-right: 20rpx;
   height: 24rpx;
   line-height: 24rpx;
-  color: #ffd300;
+  color: var(--themeColor);
   font-size: 20rpx;
   font-weight: 400;
 }

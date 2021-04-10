@@ -6,8 +6,8 @@
       </view>
     </view>
     <view class="content">
-      <view class="sj"
-        ><image src="../../static/icon/sj.png" mode="" />
+      <view class="sj">
+          <image src="../../static/icon/sj.png" mode="" />
         <h1>+86</h1>
         <input
           type="text"
@@ -16,11 +16,9 @@
           placeholder="请输入手机号"
         />
         <view class="get" @click="getyzm(phone)">
-          <text>{{!codeTime?'获取验证码':codeTime+'s'}}</text>
-          </view>
-        <!-- <button @click="getyzm(phone)">验证码</button> -->
-        </view
-      >
+          <text>{{ !codeTime ? "获取验证码" : codeTime + "s" }}</text>
+        </view>
+      </view>
       <view class="yzm"
         ><image src="../../static/icon/yzm.png" mode="" /><input
           type="text"
@@ -39,51 +37,40 @@ export default {
       phone: "",
       yzm: "",
       PhoneCode: {},
-      codeTime:0
+      codeTime: 0,
     };
   },
   methods: {
     //验证码发送请求
     getyzm(phone) {
-      let phonetf = /^[1][3,4,5,7,8][0-9]{9}$/;
-      let zz = phonetf.test(phone);
+        let t = this;
+      let phonetf = /^[1][3,4,5,7,8][0-9]{9}$/,
+      zz = phonetf.test(phone);
       console.log(zz);
       if (zz == false) {
-        uni.showToast({
-          title: "手机号码有误，请重填",
-          duration: 1000,
-          icon: "none",
-        });
+        t.$u.showToast("手机号码有误，请重填",1000,'none')
       } else {
-        if(this.codeTime>0){
-      uni.showToast({
-      title: '不能重复获取',
-      icon:"none"
-      });
-      return;
-      }    else{
-      this.codeTime = 60
-      let timer = setInterval(()=>{
-      this.codeTime--;
-      if(this.codeTime<1){
-      clearInterval(timer);
-      this.codeTime = 0
-      }
-      },1000)
+        if (t.codeTime > 0) {
+        t.$u.showToast("不能重复获取",1000,'none')
+          return;
+        } else {
+          t.codeTime = 60;
+          let timer = setInterval(() => {
+            t.codeTime--;
+            if (t.codeTime < 1) {
+              clearInterval(timer);
+              t.codeTime = 0;
+            }
+          }, 1000);
         }
-      // console.log(t.phone);
-      let t = this;
-      let data={phone: t.phone};
-      t.$u.ajax('/getyzm',data,function(res){
-            console.log(res);
-            t.PhoneCode = res.validate;
-            var yzm = "你的验证码：" + JSON.stringify(res.js_code);
-            uni.showToast({
-              title: yzm,
-              duration: 3000,
-              icon: "none",
-            });
-      })
+        // console.log(t.phone);
+        let data = { phone: t.phone };
+        t.$u.ajax(t.$api.getyzm, data, function (res) {
+          console.log(res);
+          t.PhoneCode = res.validate;
+          var yzm = "你的验证码：" + JSON.stringify(res.js_code);
+          t.$u.showToast(yzm,3000,'none')
+        });
       }
     },
     //验证码验证真假
@@ -104,7 +91,7 @@ export default {
         }
       };
       let findCodeAndPhone = (phone, code) => {
-        for (var item of phonecode) {
+        for (let item of phonecode) {
           if (phone == item.phone && code == item.code) {
             return "login";
           }
@@ -121,22 +108,34 @@ export default {
         if (status == "login") {
           //登录成功
           console.log("登录成功");
-          uni.setStorageSync('phone', phone);
-          //             uni.switchTab({
-          //             url: '/pages/mine/index'
+          uni.setStorageSync("phone", phone);
+        uni.getUserProfile({
+        desc: "Wexin", // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+        success: (res) => {
+          console.log(res.userInfo);
+          t.userInfo = res.userInfo;
+          if (res.userInfo) {
+            uni.setStorageSync("userInfo", res.userInfo);
+          }
+          // uni.reLaunch({
+          //   url: `/pages/mine/index?phone=${t.phone}`,
           // });
-          uni.reLaunch({
-            url: `/pages/mine/index?phone=${t.phone}`,
+          uni.switchTab({
+            url: "/pages/index/index",
           });
-          uni.reLaunch({
-            url: '/pages/index/index',
-          });
+        },
+        fail: (err) => {
+          console.log(err);
+        },
+      });
+          
         } else if (status == "error") {
           console.log("登录失败");
         }
       } else {
         console.log("未发送验证码");
       }
+      
     },
   },
 };
@@ -148,7 +147,7 @@ export default {
   background-color: #f1f1f1;
   height: 1800rpx;
   .top {
-    background-color: #ffd300;
+    background-color: var(--themeColor);
     height: 300rpx;
 
     .gs {
@@ -176,6 +175,7 @@ export default {
     justify-content: space-between;
     flex-direction: column;
     align-items: center;
+    height: 400rpx;
     .sj {
       flex: 1;
       width: 100%;
@@ -184,43 +184,43 @@ export default {
       border-bottom: 1rpx solid #c8c7cc;
       display: flex;
       justify-content: space-between;
-      image {
+        line-height: 60rpx;
+        height: 60rpx;
+      
+        image {
+        margin-top: 30rpx;
         width: 40rpx;
         height: 40rpx;
         margin-right: 20rpx;
+      }
+      h1{
+        margin-top: 20rpx;
       }
       input {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 0 40rpx;
+        margin: 30rpx 40rpx;
       }
-
-.get{
+      .get {
+        margin-top: 20rpx;
         display: flex;
         justify-content: center;
         align-items: center;
         width: 180rpx;
         font-size: 20rpx;
-
- background-color: orange;
- height: 70rpx;
- line-height: 70rpx;
- color: white;
- border-radius: 10rpx;
- padding: 0 20rpx;
-}
-      // button {
-      //   display: flex;
-      //   justify-content: center;
-      //   align-items: center;
-      //   width: 150rpx;
-      //   height: 60rpx;
-      //   font-size: 20rpx;
-      //   background-color: #f1f1f1;
-      // }
+        background-color: orange;
+        height: 70rpx;
+        line-height: 70rpx;
+        color: white;
+        border-radius: 10rpx;
+        padding: 0 20rpx;
+      }
+      
+      
     }
     .yzm {
+      height: 150rpx;
       flex: 1;
       width: 100%;
       padding: 20rpx 50rpx;
@@ -231,12 +231,17 @@ export default {
         width: 40rpx;
         height: 40rpx;
         margin-right: 20rpx;
+        margin-top: 30rpx;
+      }
+      input{
+        margin-top: 30rpx;
       }
     }
     .login {
       flex: 1;
       width: 100%;
       padding: 20rpx 50rpx;
+      height: 80rpx;
       button {
         background-color: #f1f1f1;
       }
