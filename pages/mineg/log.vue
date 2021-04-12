@@ -1,5 +1,6 @@
 <template>
   <view>
+    <!-- 搜索框内容 -->
     <view class="search-top">
       <view class="search-content">
         <view class="left">
@@ -27,6 +28,9 @@
         <button @click="getgoodList()">搜索</button>
       </view>
     </view>
+    <!-- 搜索框内容 -->
+
+    <!-- 隔断 -->
     <view class="geduan"></view>
     <!-- 搜索结果模块 -->
     <view class="result">
@@ -35,7 +39,7 @@
           class="box"
           v-for="(item, index) in goodList"
           :key="index"
-          :url="`../attractions/index?good_id=${item.id}&comments=true`"
+          :url="`../attractions/index?good_id=${item.id}&isShowComments=true`"
         >
           <view class="bd">
             <swiper autoplay indicator-dots circular style="height: 394rpx">
@@ -77,12 +81,9 @@ export default {
   components: {},
   data() {
     return {
-      searWord: "",
       text: "",
       isShow: false,
       searchWordList: [],
-      gettextArr: [],
-      textArr: [],
       goodList: [],
     };
   },
@@ -104,9 +105,9 @@ export default {
     },
     // 获取联想词
     getkeyword() {
-      let t = this;
-      var keyword = t.text;
-      let data = { keyword: keyword };
+      let t = this,
+        keyword = t.text,
+        data = { keyword: keyword };
       t.$u.ajax(t.$api.getScenicwords, data, function (res) {
         console.log(res, "搜索接口返回数据");
         var wordList = [];
@@ -127,10 +128,10 @@ export default {
     },
     // 获取搜索结果
     getgoodList() {
-      let t = this;
+      let t = this,
+        keyword = t.text,
+        data = { good_name: keyword };
       t.isShow = false;
-      var keyword = t.text;
-      let data = { good_name: keyword };
       t.$u.ajax(t.$api.getSearchResult, data, function (res) {
         console.log(res, "搜索接口返回数据");
         t.goodList = res;

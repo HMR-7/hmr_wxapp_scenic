@@ -1,6 +1,7 @@
 // 本地地址  http://127.0.0.1:8002
 // 本地网络真机测试地址 随机 http://192.168.1.104:8002
 const http = 'http://127.0.0.1:8002'
+
 const api = {
     getIndex:http + '/',//获取首页列表数据
     getSwiper:http + '/getSwiper',//详情页页面数据

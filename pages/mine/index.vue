@@ -20,9 +20,10 @@
         <view style="color: #fff" @click="exit()">退出登录 ></view>
       </view>
       <view v-else class="login-right-gg">
-        <view class="login-btn" @click="getUserInfo()">点击登录 ></view>
+        <view class="login-btn" @click="toLogin()">点击登录 ></view>
       </view>
     </view>
+    <!-- 是否登录弹窗 -->
     <uni-popup ref="popup" type="dialog">
       <uni-popup-dialog
         mode="base"
@@ -35,17 +36,17 @@
         @confirm="confirm"
       ></uni-popup-dialog>
     </uni-popup>
-    <!-- 未登录 -->
+    <!-- 用户使用内容 -->
     <view class="czzx">
       <h1>操作中心</h1>
       <view class="cz">
         <view class="sc"
-          ><i>{{ collectlength ? collectlength : a }}</i
-          ><i @click="getcolletye()">我的收藏</i>
+          ><i>{{ collectlength ? collectlength : initlength }}</i
+          ><i @click="toCollect()">我的收藏</i>
         </view>
         <view class="zj"
-          ><i>{{ footlength ? footlength : a }}</i
-          ><i @click="getFooer()">我的足迹</i>
+          ><i>{{ footlength ? footlength : initlength }}</i
+          ><i @click="toFoot()">我的足迹</i>
         </view>
       </view></view
     >
@@ -53,7 +54,7 @@
       <h1>客服中心</h1>
       <view class="kf">
         <view class="dh"
-          ><button @click="callPhone">
+          ><button @click="callServicePhone">
             <i class="iconfont icon-dianhua01"></i><i>电话客服</i>
           </button>
         </view>
@@ -63,7 +64,7 @@
           </button></view
         >
         <view class="ly"
-          ><button @click="bxrz()">
+          ><button @click="toLog()">
             <i class="iconfont icon-biji"></i><i>旅游日志</i>
           </button>
         </view>
@@ -76,7 +77,7 @@
 export default {
   data() {
     return {
-      loginzt: false,
+      // loginzt: false,
       userInfo: {},
       openid: "",
       userName: "",
@@ -84,27 +85,26 @@ export default {
       footlength: 0,
       user_id: 0,
       collectlength: 0,
-      a: 0,
+      initlength: 0,
     };
   },
   onShow() {
-    let t =this;
+    let t = this;
     var userphone = uni.getStorageSync("phone");
-     t.userPhone = userphone
+    t.userPhone = userphone;
     if (userphone || t.userInfo) {
       t.getUserId();
     }
     t.userInfo = uni.getStorageSync("userInfo");
-        if (!t.userInfo.avatarUrl) {
-          t.open();
-        }
+    if (!t.userInfo.avatarUrl) {
+      t.open();
+    }
   },
-  onLoad() {
-  },
+  onLoad() {},
   methods: {
     //退出登录
     exit() {
-      let t =this;
+      let t = this;
       t.collectlength = 0;
       t.footlength = 0;
       t.userInfo = {};
@@ -115,7 +115,7 @@ export default {
       uni.setStorageSync("user_id", user_id);
       uni.setStorageSync("phone", phone);
     },
-    // 打开消息提示框
+    // 打开登录消息提示框
     open() {
       // 通过组件定义的ref调用uni-popup方法
       this.$refs.popup.open();
@@ -125,17 +125,10 @@ export default {
     },
     //  点击确认按钮触发
     confirm(done, value) {
-      uni.navigateTo({
-        url: "./login",
-      });
+      this.$u.toPage("./login");
       done();
     },
-    //跳转去编写文章页面
-    bxrz() {
-      uni.navigateTo({
-        url: "../mineg/log",
-      });
-    },
+
     //得到用户userid
     getUserId() {
       let t = this;
@@ -144,30 +137,34 @@ export default {
       let data = { userPhone: userphone };
       t.$u.ajax(t.$api.getUserId, data, function (res) {
         // console.log(res, "搜索接口返回数据");
-        var user_id = res[0].id;
+        let user_id = res[0].id;
         uni.setStorageSync("user_id", user_id);
         let user_iddd = uni.getStorageSync("user_id");
         if (user_iddd) {
-          t.getlength();
-          t.getcollectlength();
+          t.getFootLength();
+          t.getCollectLength();
         }
-        console.log(user_iddd, "99999");
+        // console.log(user_iddd, "99999");
       });
+    },
+    //跳转去编写文章页面
+    toLog() {
+      this.$u.toPage("../mineg/log");
     },
     //跳转去用户收藏界面
-    getcolletye() {
-      uni.navigateTo({
-        url: "../mineg/collect",
-      });
+    toCollect() {
+      this.$u.toPage("../mineg/collect");
     },
     // 跳去浏览历史页面
-    getFooer() {
-      uni.navigateTo({
-        url: "../mineg/foot",
-      });
+    toFoot() {
+      this.$u.toPage("../mineg/foot");
+    },
+    // 跳转去登录页面
+    toLogin() {
+      this.$u.toPage("./login");
     },
     //获取用户浏览页面的个数
-    getlength() {
+    getFootLength() {
       let t = this;
       t.user_id = uni.getStorageSync("user_id");
       let data = { page: 1, limit: 200, user_id: t.user_id };
@@ -178,7 +175,7 @@ export default {
       });
     },
     //获取用户收藏页面的个数
-    getcollectlength() {
+    getCollectLength() {
       let t = this;
       t.user_id = uni.getStorageSync("user_id");
       let data = { page: 1, limit: 200, user_id: t.user_id };
@@ -197,15 +194,9 @@ export default {
       });
     },
     // 电话客服 start
-    callPhone() {
+    callServicePhone() {
       uni.makePhoneCall({
         phoneNumber: "13285871185", //仅为示例
-      });
-    },
-    // 获取用户信息
-    getUserInfo() {
-      uni.navigateTo({
-        url: "./login",
       });
     },
   },

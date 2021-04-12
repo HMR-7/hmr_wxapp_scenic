@@ -59,6 +59,7 @@ export default {
       this.page += 1;
       this.getfooterList();
     },
+    //获取浏览足迹
     getfooterList() {
       let t = this,
       page = t.page,

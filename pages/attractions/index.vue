@@ -51,13 +51,13 @@
     </view>
     <!-- 主要内容 -->
     <!-- 评论区内容 -->
-    <view class="comments" v-show="comments">
+    <view class="comments" v-show="isShowComments">
       <view class="title"
         ><view class="img"
           ><image src="../../static/icon/pltitle.png" mode="" /></view
         ><view class="zxpl">最新评论</view></view
       >
-      <view class="commentsnr-sf" v-if="commentslist.length==0">
+      <view class="commentsnr-sf" v-if="commentslist.length == 0">
         <h1>赶紧来占个沙发吧！</h1>
       </view>
       <view
@@ -98,11 +98,11 @@
       </wyb-popup>
     </view>
     <!-- 评论编写按钮 -->
-    <view v-show="comments" class="bx" @click="commentsbx()"
+    <view v-show="isShowComments" class="bx" @click="commentsbx()"
       ><image src="../../static/icon/plbx.png" mode=""
     /></view>
     <!-- 附近其他内容 -->
-    <view v-show="!comments" class="contentzx">
+    <view v-show="!isShowComments" class="contentzx">
       <!-- 门票信息 开始 -->
       <view class="mpxx">
         <view class="mp-title">
@@ -151,7 +151,7 @@
           <view class="popup-content">
             <view class="lbt">
               <swiper autoplay indicator-dots circular style="height: 380rpx">
-                <swiper-item v-for="(item, index) in arr" :key="index">
+                <swiper-item v-for="(item, index) in hotelArr" :key="index">
                   <image
                     :src="item"
                     @click="prehotelviewImg(hotellist, index)"
@@ -209,29 +209,26 @@ export default {
       foodlist: [],
       page: 1,
       limit: 6,
-      scsf: 0,
       user_id: 0,
-      sf: true,
+      isCollect: true,
       open_id: 0,
-      arr: [],
-      comments: false,
+      hotelArr: [],
+      isShowComments: false,
       commentslist: [],
-      time: "",
       article: "",
       userInfo: "",
       userName: "",
       user_head: "",
       commentslistlenth: 0,
-      pl: false,
+      isComments: false,
       flag: "no",
     };
   },
 
   onLoad: function (options) {
-    console.log(this.commentslist);
     let t = this;
-    if (options.comments) {
-      t.comments = options.comments;
+    if (options.isShowComments) {
+      t.isShowComments = options.isShowComments;
     }
     t.good_id = options.good_id;
     t.getAjax();
@@ -286,9 +283,7 @@ export default {
     },
     //  点击确认按钮触发
     confirm(done, value) {
-      uni.navigateTo({
-        url: "../mine/login",
-      });
+      this.$u.toPage("../mine/login");
       done();
     },
     //获取用户信息
@@ -335,7 +330,7 @@ export default {
     },
     //评论区切换
     cutcomments() {
-      this.comments = !this.comments;
+      this.isShowComments = !this.isShowComments;
     },
     //获取评论区内容
     getComments() {
@@ -345,9 +340,9 @@ export default {
         // console.log(res);
         t.commentslistlenth = res.length;
         if (res.length) {
-          t.pl = true;
+          t.isComments = true;
         }
-        if (res.log.length == 0 && t.pl == true) {
+        if (res.log.length == 0 && t.isComments == true) {
           t.page--;
           t.$u.showToast("没有更多数据了", 2000, "none");
         } else {
@@ -366,7 +361,7 @@ export default {
       t.open_id = id;
       // console.log(t.open_id);
       var str = t.hotellist[t.open_id].src;
-      t.arr = str.split(",");
+      t.hotelArr = str.split(",");
     },
     // 添加用户足迹
     getuserfooter() {
@@ -384,17 +379,17 @@ export default {
         data = { user_id: user_id, limit: 6, page: 1 };
       t.$u.ajax(t.$api.getCollectList, data, function (res) {
         let id = parseInt(t.good_id);
-        for (var i = 0; i < res.length; i++) {
+        for (let i = 0; i < res.length; i++) {
           if (id == res[i].id) {
             // console.log('对');
-            t.sf = false;
+            t.isCollect = false;
             break;
           } else {
-            t.sf = true;
+            t.isCollect = true;
             // console.log('错');
           }
         }
-        if (!t.sf) {
+        if (!t.isCollect) {
           t.showUpImg = false;
         } else {
           t.showUpImg = true;
@@ -456,7 +451,7 @@ export default {
     // 酒店轮播图
     prehotelviewImg(index) {
       let t = this;
-      t.$u.previewImage(t.arr, index);
+      t.$u.previewImage(t.hotelArr, index);
     },
     // 景区轮播图
     previewImg(list, index) {
@@ -553,7 +548,7 @@ export default {
     .mp {
       flex: 1;
       text-align: right;
-      color: #f0ad4e;
+      color: var(--themeColor);
     }
   }
 }
@@ -581,9 +576,9 @@ export default {
       padding-left: 50rpx;
     }
   }
-  .commentsnr-sf{
+  .commentsnr-sf {
     color: black;
-    h1{
+    h1 {
       text-align: center;
     }
   }
@@ -628,7 +623,7 @@ export default {
     h1 {
       padding: 20rpx 15rpx;
       font-size: 30rpx;
-      color: #f0ad4e;
+      color: var(--themeColor);
     }
     .nr {
       width: 100%;
@@ -648,7 +643,7 @@ export default {
     button {
       border-radius: 50rpx;
       color: #fff;
-      background-color: #f0ad4e;
+      background-color: var(--themeColor);
       margin: 0 15rpx;
     }
   }
@@ -693,7 +688,7 @@ export default {
       height: 70rpx;
       line-height: 70rpx;
       .price {
-        color: #f0ad4e;
+        color: var(--themeColor);
         font-size: 18rpx;
         margin-right: 30rpx;
       }
@@ -709,7 +704,7 @@ export default {
       border-bottom: 1rpx solid rgb(223, 220, 220);
 
       .price {
-        color: #f0ad4e;
+        color: var(--themeColor);
         font-size: 18rpx;
         margin-right: 30rpx;
       }
@@ -791,7 +786,7 @@ export default {
       height: 70rpx;
       line-height: 70rpx;
       .price {
-        color: #f0ad4e;
+        color: var(--themeColor);
         font-size: 18rpx;
         margin-right: 30rpx;
       }
@@ -806,7 +801,7 @@ export default {
       z-index: 1000;
       border-bottom: none !important;
       .price {
-        color: #f0ad4e;
+        color: var(--themeColor);
         font-size: 18rpx;
         margin-right: 30rpx;
       }
@@ -829,7 +824,7 @@ export default {
           color: #c0c0c0;
         }
         .x_price {
-          color: #f0ad4e;
+          color: var(--themeColor);
           font-size: 25rpx;
         }
       }

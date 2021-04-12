@@ -2,7 +2,7 @@
   <view>
     <!-- 搜索框 -->
     <view class="index-search">
-      <button class="sr" @click="test">
+      <button class="sr" @click="toSearchPage">
         <span class="iconfont icon-sousuo"></span>请输入景区名称
       </button>
     </view>
@@ -81,10 +81,9 @@ export default {
     t.getAjax();
   },
   methods: {
-    test() {
-      uni.navigateTo({
-        url: "./search",
-      });
+    //跳转去搜索页面
+    toSearchPage() {
+      this.$u.toPage('./search')
     },
     getAjax() {
       let t = this,
@@ -109,6 +108,7 @@ export default {
     },
     //预览轮播图
     previewImg(listimg, index) {
+      let t = this;
       // var i = this.list.swipeArr; //获取当前页面的轮播图数据
       let imgsArray = [];
       for (let i = 0; i < 6; i++) {
@@ -116,10 +116,7 @@ export default {
         imgsArray.push(listimg[i]);
       }
       //uniapp预览轮播图
-      uni.previewImage({
-        current: index, //预览图片的下标
-        urls: imgsArray, //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
-      });
+      t.$u.previewImage(imgsArray,index);
     },
   },
 };

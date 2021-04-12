@@ -37,7 +37,7 @@ const utils = {
     // 返回接口数据的拼接和消息提示
     pullRefresh(list, res, page) {
         var p = null;
-        console.log(page, '传递进来的page');
+        // console.log(page, '传递进来的page');
         list = [...list, ...res]
         if (list.length == 0 && page == 1) {
             console.log("没有数据");
@@ -72,6 +72,27 @@ const utils = {
         uni.previewImage({
             current: index, //预览图片的下标
             urls: list, //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
+            longPressActions: {
+                itemList: ["发送给朋友", "保存图片", "收藏"],
+                success: function(data) {
+                  console.log(
+                    "选中了第" +
+                      (data.tapIndex + 1) +
+                      "个按钮,第" +
+                      (data.index + 1) +
+                      "张图片"
+                  );
+                },
+                fail: function(err) {
+                  console.log(err.errMsg);
+                }
+              }
+          });
+    },
+    //跳转页面封装
+    toPage(url){
+        uni.navigateTo({
+            url: url,
           });
     }
 }

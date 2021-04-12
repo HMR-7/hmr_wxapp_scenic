@@ -25,7 +25,7 @@
         </view>
       </view>
       <view class="right">
-        <button @click="test(text)">搜索</button>
+        <button @click="toSearchDetails(text)">搜索</button>
       </view>
     </view>
     <view class="geduan"></view>
@@ -43,7 +43,7 @@
         </view>
         <view class="keyword">
           <view v-for="(item, index) in gettextArr" :key="index">
-            <view @click="changetext(item)">{{ item }}</view></view
+            <view @click="changeText(item)">{{ item }}</view></view
           >
         </view>
       </view>
@@ -131,7 +131,7 @@ export default {
       });
     },
     // 跳转搜索详情页面
-    test(text) {
+    toSearchDetails(text) {
       let t = this;
       console.log(text);
       //每次添加数据前，先把前面的值清空
@@ -163,13 +163,13 @@ export default {
           // console.log('success');
         },
       });
-
-      uni.navigateTo({
-        url: "./searchDetails?name=" + text,
-      });
+      t.$u.toPage("./searchDetails?name=" + text)
+      // uni.navigateTo({
+      //   url: "./searchDetails?name=" + text,
+      // });
     },
     //点击搜索历史修改关键字
-    changetext(text) {
+    changeText(text) {
       this.text = text;
     },
   },

@@ -59,6 +59,7 @@ export default {
       this.page += 1;
       this.getCollect();
     },
+    //获取收藏景点
     getCollect() {
       let t = this,
         user_id = t.user_id,
